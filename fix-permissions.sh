@@ -36,7 +36,7 @@ if [[ ${#ISGRP} -eq 0 ]]
     exit 1
 fi
 
-if [[ ! -d ${#WP_ROOT}/wp-admin ]]
+if [[ ! -d ${WP_ROOT}/wp-admin ]]
 then
   echo "${WP_ROOT}/wp-admin is not a valid path. Bye."
   exit 1
