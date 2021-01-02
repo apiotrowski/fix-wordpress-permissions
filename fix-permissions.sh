@@ -30,7 +30,7 @@ then
   exit 1
 fi
 
-if [[ ${EDITABLE} == "modify" ]]
+if [[ ${EDITABLE} == "readonly" ]]
 then
   echo "Set readonly permissions"
 
@@ -62,7 +62,7 @@ then
 exit 1
 fi
 
-if [[ ${EDITABLE} == "readonly" ]]
+if [[ ${EDITABLE} == "writable" ]]
 then
   echo "Set writable permissions"
 
