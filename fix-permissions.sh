@@ -24,18 +24,6 @@ if [[ ${#WP_ROOT} -eq 0 ]]
     exit 1
 fi
 
-if [[ ${#ISUSER} -eq 0 ]]
-  then
-    echo "${WP_OWNER} is not a user"
-    exit 1
-fi
-
-if [[ ${#ISGRP} -eq 0 ]]
-  then
-    echo "${WP_GROUP} is not a group"
-    exit 1
-fi
-
 if [[ ! -d ${WP_ROOT}/wp-admin ]]
 then
   echo "${WP_ROOT}/wp-admin is not a valid path. Bye."
@@ -44,9 +32,27 @@ fi
 
 if [[ ${EDITABLE} == "modify" ]]
 then
-  # reset to safe defaults
-  echo "Reseting permissions to safe defaults"
 
+  setReadonlyPermissions
+
+exit 1
+fi
+
+if [[ ${#EDITABLE} -eq 0 ]] or [[ ${EDITABLE} == "readonly" ]]
+then
+
+  setWritablePermissions
+
+exit 1
+fi
+
+function setWritablePermissions() {
+  echo "Set writable permissions"
+
+  # reset to safe defaults
+  echo "Reseting permissions to default values"
+
+  chown www-data:www-data -R ${WP_ROOT}/*;
   find ${WP_ROOT} -type d -exec chmod 777 {} \;
   find ${WP_ROOT} -type f -exec chmod 777 {} \;
 
@@ -55,26 +61,33 @@ then
 
   chgrp ${WP_GROUP} ${WP_ROOT}/wp-config.php
   chmod 660 ${WP_ROOT}/wp-config.php
+}
 
-exit 1
-fi
+function setReadonlyPermissions() {
+  echo "Set readonly permissions"
 
-if [[ ${#EDITABLE} -eq 0 ]] or [[ ${EDITABLE} == "readonly" ]]
-then
+  if [[ ${#ISUSER} -eq 0 ]]
+  then
+      echo "${WP_OWNER} is not a user"
+      exit 1
+  fi
+
+  if [[ ${#ISGRP} -eq 0 ]]
+    then
+      echo "${WP_GROUP} is not a group"
+      exit 1
+  fi
+
   # reset to safe defaults
-  echo "Reseting permissions to safe defaults"
+  echo "Reseting permissions to default values"
 
-  find ${WP_ROOT} -exec chown ${WP_OWNER}:${WP_GROUP} {} \;
-  find ${WP_ROOT} -type d -exec chmod 755 {} \;
-  find ${WP_ROOT} -type f -exec chmod 644 {} \;
+  chown www-data:www-data -R ${WP_ROOT}/*;
+  find ${WP_ROOT} -type d -exec chmod 777 {} \;
+  find ${WP_ROOT} -type f -exec chmod 777 {} \;
 
   # allow wordpress to manage wp-config.php (but prevent world access)
   echo "Allowing wordpress to manage wp-config.php (but prevent world access)"
 
   chgrp ${WP_GROUP} ${WP_ROOT}/wp-config.php
   chmod 660 ${WP_ROOT}/wp-config.php
-
-exit 1
-fi
-
-
+}
