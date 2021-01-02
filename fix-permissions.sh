@@ -9,7 +9,7 @@
 WP_ROOT=$1  # <-- wordpress root directory
 WP_OWNER=$2 # <-- wordpress owner
 WP_GROUP=$3 # <-- wordpress group
-WS_GROUP=$3 # <-- webserver group
+EDITABLE=$4 # <-- webserver group
 
 # Check the arguments before proceeding
 
@@ -42,22 +42,33 @@ then
   exit 1
 fi
 
-# reset to safe defaults
-echo "Reseting permissions to safe defaults"
+if [[ ${EDITABLE} -eq 'modify']]
+then
+  # reset to safe defaults
+  echo "Reseting permissions to safe defaults"
 
-find ${WP_ROOT} -exec chown ${WP_OWNER}:${WP_GROUP} {} \;
-find ${WP_ROOT} -type d -exec chmod 755 {} \;
-find ${WP_ROOT} -type f -exec chmod 644 {} \;
+  find ${WP_ROOT} -type d -exec chmod 777 {} \;
+  find ${WP_ROOT} -type f -exec chmod 777 {} \;
 
-# allow wordpress to manage wp-config.php (but prevent world access)
-echo "Allowing wordpress to manage wp-config.php (but prevent world access)"
+exit 1
+fi
 
-chgrp ${WS_GROUP} ${WP_ROOT}/wp-config.php
-chmod 660 ${WP_ROOT}/wp-config.php
+if [[ ${#EDITABLE} -eq 0 ]] or [[ ${EDITABLE} == 'readonly']]
+then
+  # reset to safe defaults
+  echo "Reseting permissions to safe defaults"
 
-# allow wordpress to manage wp-content
-echo "Allowing wordpress to manage wp-content"
+  find ${WP_ROOT} -exec chown ${WP_OWNER}:${WP_GROUP} {} \;
+  find ${WP_ROOT} -type d -exec chmod 755 {} \;
+  find ${WP_ROOT} -type f -exec chmod 644 {} \;
 
-find ${WP_ROOT}/wp-content -exec chgrp ${WS_GROUP} {} \;
-find ${WP_ROOT}/wp-content -type d -exec chmod 775 {} \;
-find ${WP_ROOT}/wp-content -type f -exec chmod 664 {} \;
+  # allow wordpress to manage wp-config.php (but prevent world access)
+  echo "Allowing wordpress to manage wp-config.php (but prevent world access)"
+
+  chgrp ${WP_GROUP} ${WP_ROOT}/wp-config.php
+  chmod 660 ${WP_ROOT}/wp-config.php
+
+exit 1
+fi
+
+
