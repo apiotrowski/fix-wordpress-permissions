@@ -7,9 +7,9 @@
 #
 
 WP_ROOT=$1  # <-- wordpress root directory
-WP_OWNER=$2 # <-- wordpress owner
-WP_GROUP=$3 # <-- wordpress group
-EDITABLE=$4 # <-- webserver group
+EDITABLE=$2 # <-- webserver group
+WP_OWNER=$3 # <-- wordpress owner
+WP_GROUP=$4 # <-- wordpress group
 
 # Check the arguments before proceeding
 
@@ -42,13 +42,19 @@ then
   exit 1
 fi
 
-if [[ ${#EDITABLE} -gt 0 ]] and [[ ${EDITABLE} == "modify" ]]
+if [[ ${EDITABLE} == "modify" ]]
 then
   # reset to safe defaults
   echo "Reseting permissions to safe defaults"
 
   find ${WP_ROOT} -type d -exec chmod 777 {} \;
   find ${WP_ROOT} -type f -exec chmod 777 {} \;
+
+  # allow wordpress to manage wp-config.php (but prevent world access)
+  echo "Allowing wordpress to manage wp-config.php (but prevent world access)"
+
+  chgrp ${WP_GROUP} ${WP_ROOT}/wp-config.php
+  chmod 660 ${WP_ROOT}/wp-config.php
 
 exit 1
 fi
