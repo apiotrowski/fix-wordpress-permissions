@@ -42,7 +42,7 @@ then
   exit 1
 fi
 
-if [[ ${EDITABLE} -eq 'modify']]
+if [[ ${#EDITABLE} -gt 0 ]] and [[ ${EDITABLE} == "modify" ]]
 then
   # reset to safe defaults
   echo "Reseting permissions to safe defaults"
@@ -53,7 +53,7 @@ then
 exit 1
 fi
 
-if [[ ${#EDITABLE} -eq 0 ]] or [[ ${EDITABLE} -eq 'readonly']]
+if [[ ${#EDITABLE} -eq 0 ]] or [[ ${EDITABLE} == "readonly" ]]
 then
   # reset to safe defaults
   echo "Reseting permissions to safe defaults"
