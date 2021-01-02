@@ -53,7 +53,7 @@ then
 exit 1
 fi
 
-if [[ ${#EDITABLE} -eq 0 ]] or [[ ${EDITABLE} == 'readonly']]
+if [[ ${#EDITABLE} -eq 0 ]] or [[ ${EDITABLE} -eq 'readonly']]
 then
   # reset to safe defaults
   echo "Reseting permissions to safe defaults"
