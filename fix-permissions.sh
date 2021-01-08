@@ -18,6 +18,8 @@ ISUSER=$(id -u $WP_OWNER 2> /dev/null)
 # Is group in the group file? If so, returns line
 ISGRP=$(egrep -i $WP_GROUP /etc/group)
 
+echo "Start fix-permission"
+
 if [[ ${#WP_ROOT} -eq 0 ]]
   then
     echo "No path arguments supplied. Bye."
@@ -58,8 +60,6 @@ then
 
   chgrp ${WP_GROUP} ${WP_ROOT}/wp-config.php
   chmod 660 ${WP_ROOT}/wp-config.php
-
-exit 1
 fi
 
 if [[ ${EDITABLE} == "writable" ]]
@@ -78,6 +78,7 @@ then
 
   chgrp ${WP_GROUP} ${WP_ROOT}/wp-config.php
   chmod 660 ${WP_ROOT}/wp-config.php
-
-exit 1
 fi
+
+echo "Stop fix-permission"
+exit 1
