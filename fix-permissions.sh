@@ -70,8 +70,8 @@ then
   echo "Reseting permissions to default values"
 
   chown www-data:www-data -R ${WP_ROOT}/*;
-  find ${WP_ROOT} -type d -exec chmod 777 {} \;
-  find ${WP_ROOT} -type f -exec chmod 777 {} \;
+  find ${WP_ROOT} -type d -exec chmod 755 {} \;
+  find ${WP_ROOT} -type f -exec chmod 755 {} \;
 
   # allow wordpress to manage wp-config.php (but prevent world access)
   echo "Allowing wordpress to manage wp-config.php (but prevent world access)"
